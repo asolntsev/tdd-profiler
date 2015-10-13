@@ -1,0 +1,53 @@
+apply plugin: 'java'
+
+compileJava.options.debugOptions.debugLevel = "source,lines,vars"
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+group='org.asolntsev'
+archivesBaseName = 'tdd-profiler'
+version='1.0-SNAPSHOT'
+
+defaultTasks 'test', 'jar'
+
+sourceSets {
+  main {java {srcDir 'src'}}
+  test {java {srcDir 'test'}}
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile 'org.javassist:javassist:3.20.0-GA'
+  testCompile 'junit:junit:4.12'
+  testCompile 'com.codeborne:selenide:2.23'
+}
+
+task libs(type: Sync) {
+  from configurations.compile
+  from configurations.testCompile
+  into "$buildDir/lib"
+}
+
+compileJava.dependsOn libs
+
+test {
+  include 'org/asolntsev/**/*'
+}
+
+jar {
+  // archiveName = "${rootProject.name}-${rootProject.version}.jar"
+  manifest {
+    attributes(
+      'Premain-Class': 'org.asolntsev.agent.Agent',
+      'Can-Redefine-Classes': 'true',
+      'Can-Retransform-Classes': 'true',
+      'Can-Set-Native-Method-Prefix': 'true',
+      'Implementation-Title': project.group + '.' + project.name,
+      'Implementation-Version': version,
+      'Implementation-Vendor': "Codeborne"
+    )
+  }
+}
