@@ -4,7 +4,7 @@ compileJava.options.debugOptions.debugLevel = "source,lines,vars"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-group='org.asolntsev'
+group='com.jokerconf'
 archivesBaseName = 'tdd-profiler'
 version='1.0-SNAPSHOT'
 
@@ -34,14 +34,14 @@ task libs(type: Sync) {
 compileJava.dependsOn libs
 
 test {
-  include 'org/asolntsev/**/*'
+  include 'com/jokerconf/**/*'
 }
 
 jar {
   // archiveName = "${rootProject.name}-${rootProject.version}.jar"
   manifest {
     attributes(
-      'Premain-Class': 'org.asolntsev.agent.Agent',
+      'Premain-Class': 'com.jokerconf.profiler.agent.Agent',
       'Can-Redefine-Classes': 'true',
       'Can-Retransform-Classes': 'true',
       'Can-Set-Native-Method-Prefix': 'true',

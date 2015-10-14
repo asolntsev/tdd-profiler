@@ -1,5 +1,6 @@
-package com.jokerconf.agent;
+package com.jokerconf.profiler.agent;
 
+import com.jokerconf.profiler.statistics.Statistics;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -11,6 +12,10 @@ import java.lang.reflect.Modifier;
 import java.security.ProtectionDomain;
 
 public class MethodLogger implements ClassFileTransformer {
+  public MethodLogger(Statistics statistics) {
+    MethodInterceptor.statistics = statistics;
+  }
+
   @Override
   public byte[] transform(ClassLoader loader,
                           String className,
@@ -19,9 +24,11 @@ public class MethodLogger implements ClassFileTransformer {
                           byte[] classfileBuffer) throws IllegalClassFormatException {
 
     ClassPool cp = ClassPool.getDefault();
-    cp.importPackage("org.asolntsev.agent");
+    cp.importPackage("com.jokerconf.profiler.agent");
 
-    if (className.startsWith("org/asolntsev/agent") || className.startsWith("java/") || className.startsWith("sun/")) {
+    if (className.startsWith("java/") || className.startsWith("sun/") ||
+        className.startsWith("com/jokerconf/profiler") ||
+        className.startsWith("com/intellij")) {
       return classfileBuffer;
     }
 
@@ -34,10 +41,11 @@ public class MethodLogger implements ClassFileTransformer {
         if (Modifier.isAbstract(method.getModifiers())) continue;
         try {
           method.insertBefore(" { " +
-              "org.asolntsev.agent.Stack.push();" +
-              "org.asolntsev.agent.Stack.log(\"" + className + "." + method.getName() + "\"); " +
+              "com.jokerconf.profiler.agent.MethodInterceptor.enter(\"" + className + "\", \"" + method.getName() + "\"); " +
               "}");
-          method.insertAfter("{ org.asolntsev.agent.Stack.pop(); }", true);
+          method.insertAfter(" { " +
+              "com.jokerconf.profiler.agent.MethodInterceptor.exit(\"" + className + "\", \"" + method.getName() + "\"); " +
+              "}", true);
         }
         catch (Throwable e) {
           System.err.println("Transformation failed for " + className + '.' + method.getName() + ": " + e.getMessage());
