@@ -5,13 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.stream.Collectors.joining;
-
 public class Statistics {
   private Map<String, List<Long>> durations = new HashMap<>();
 
   public void add(String method, long duration) {
-    this.durations.computeIfAbsent(method, k -> new ArrayList<>()).add(duration);
+    List<Long> times = durations.get(method);
+    if (times == null) {
+      times = new ArrayList<>();
+      durations.put(method, times);
+    }
+    
+    times.add(duration);
   }
 
   public List<Long> getExecutionTime() {
@@ -19,8 +23,11 @@ public class Statistics {
   }
 
   public String getResult() {
-    return durations.entrySet().stream().map(e ->
-        e.getKey() + " " + e.getValue().get(0) + " ms"
-    ).collect(joining("\n"));
+    StringBuilder sb = new StringBuilder();
+    for (Map.Entry<String, List<Long>> entry : durations.entrySet()) {
+      if (sb.length() > 0) sb.append("\n");
+      sb.append(entry.getKey()).append(" ").append(entry.getValue().get(0)).append(" ms");
+    }
+    return sb.toString();
   }
 }
