@@ -23,7 +23,7 @@ dependencies {
   compile 'org.javassist:javassist:3.27.0-GA'
   testCompile 'junit:junit:4.13'
   testCompile 'org.mockito:mockito-core:3.3.3'
-  testCompile 'com.codeborne:selenide:5.12.1'
+  testCompile 'com.codeborne:selenide:5.12.2'
 }
 
 task libs(type: Sync) {
