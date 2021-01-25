@@ -22,7 +22,7 @@ repositories {
 dependencies {
   compile 'org.javassist:javassist:3.27.0-GA'
   testCompile 'junit:junit:4.13.1'
-  testCompile 'org.mockito:mockito-core:3.7.0'
+  testCompile 'org.mockito:mockito-core:3.7.7'
   testCompile 'com.codeborne:selenide:5.18.0'
 }
 
