@@ -20,19 +20,11 @@ repositories {
 }
 
 dependencies {
-  compile 'org.javassist:javassist:3.29.2-GA'
-  testCompile 'junit:junit:4.13.2'
-  testCompile 'org.mockito:mockito-core:5.1.1'
-  testCompile 'com.codeborne:selenide:6.12.0'
+  implementation 'org.javassist:javassist:3.29.2-GA'
+  testImplementation 'junit:junit:4.13.2'
+  testImplementation 'org.mockito:mockito-core:5.1.1'
+  testImplementation 'com.codeborne:selenide:6.12.0'
 }
-
-task libs(type: Sync) {
-  from configurations.compile
-  from configurations.testCompile
-  into "$buildDir/lib"
-}
-
-compileJava.dependsOn libs
 
 test {
   include 'com/jokerconf/**/*'
