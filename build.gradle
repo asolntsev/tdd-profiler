@@ -27,7 +27,7 @@ dependencies {
 }
 
 test {
-  include 'com/jokerconf/**/*'
+  include 'profiler/**/*'
 }
 
 jar {
