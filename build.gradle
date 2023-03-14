@@ -23,7 +23,7 @@ dependencies {
   implementation 'org.javassist:javassist:3.29.2-GA'
   testImplementation 'junit:junit:4.13.2'
   testImplementation 'org.mockito:mockito-core:5.2.0'
-  testImplementation 'com.codeborne:selenide:6.12.2'
+  testImplementation 'com.codeborne:selenide:6.12.3'
 }
 
 test {
