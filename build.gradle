@@ -1,8 +1,8 @@
 apply plugin: 'java'
 
 compileJava.options.debugOptions.debugLevel = "source,lines,vars"
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 17
+targetCompatibility = 17
 
 group='com.jokerconf'
 archivesBaseName = 'tdd-profiler'
