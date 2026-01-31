@@ -1,17 +1,16 @@
 package profiler;
 
+import demo.GoodbyeException;
 import demo.HelloWorld;
 import demo.HelloWorldWithThrow;
-import javassist.CannotCompileException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.lang.instrument.IllegalClassFormatException;
-import java.net.URISyntaxException;
 
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -19,7 +18,7 @@ import static org.mockito.Mockito.verify;
 public class InstrumenterTest {
   Instrumenter instrumenter = new Instrumenter();
 
-  @Before
+  @BeforeEach
   public void setUp() {
     Tracer.instance = mock(Tracer.class);
   }
@@ -34,9 +33,10 @@ public class InstrumenterTest {
   }
 
   @Test
-  public void instrumentsMethods() throws IllegalAccessException, InstantiationException, InterruptedException, IOException, CannotCompileException, URISyntaxException {
-    Class instrumentedClass = instrumenter.instrumentClass(HelloWorld.class);
-    Runnable helloWorld = (Runnable) instrumentedClass.newInstance();
+  public void instrumentsMethods() throws Exception {
+    Class<?> instrumentedClass = instrumenter.instrumentClass(HelloWorld.class);
+    Runnable helloWorld = (Runnable) instrumentedClass.getDeclaredConstructor().newInstance();
+
     helloWorld.run();
     
     verify(Tracer.instance).enter();
@@ -44,33 +44,30 @@ public class InstrumenterTest {
   }
 
   @Test
-  public void instrumentsMethodsAsFinally() throws IllegalAccessException, InstantiationException, InterruptedException, IOException, CannotCompileException, URISyntaxException {
-    Class instrumentedClass = instrumenter.instrumentClass(HelloWorldWithThrow.class);
-    Runnable helloWorld = (Runnable) instrumentedClass.newInstance();
-    try {
-      helloWorld.run();
-      fail();
-    }
-    catch (RuntimeException ignore) {
-    }
+  public void instrumentsMethodsAsFinally() throws Exception {
+    Class<?> instrumentedClass = instrumenter.instrumentClass(HelloWorldWithThrow.class);
+    Runnable helloWorld = (Runnable) instrumentedClass.getDeclaredConstructor().newInstance();
+    assertThatThrownBy(helloWorld::run)
+        .isInstanceOf(GoodbyeException.class)
+        .hasMessage("Good bye");
     verify(Tracer.instance).exit("demo.HelloWorldWithThrow.run");
   }
 
   @Test
   public void shouldNotInstrumentJavaClasses() throws IllegalClassFormatException {
     byte[] bytes = new byte[0];
-    assertSame(bytes, instrumenter.transform(null, "java/lang/List", null, null, bytes));
+    assertThat(instrumenter.transform(null, "java/lang/List", null, null, bytes)).isSameAs(bytes);
   }
   
   @Test
   public void shouldNotInstrumentSunClasses() throws IllegalClassFormatException {
     byte[] bytes = new byte[0];
-    assertSame(bytes, instrumenter.transform(null, "sun/x/y/z", null, null, bytes));
+    assertThat(instrumenter.transform(null, "sun/x/y/z", null, null, bytes)).isSameAs(bytes);
   }
 
   @Test
   public void shouldNotInstrumentProfilerClasses() throws IllegalClassFormatException {
     byte[] bytes = new byte[0];
-    assertSame(bytes, instrumenter.transform(null, "profiler/Agent", null, null, bytes));
+    assertThat(instrumenter.transform(null, "profiler/Agent", null, null, bytes)).isSameAs(bytes);
   }
 }

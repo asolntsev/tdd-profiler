@@ -1,11 +1,12 @@
 apply plugin: 'java'
 
 compileJava.options.debugOptions.debugLevel = "source,lines,vars"
-sourceCompatibility = 17
-targetCompatibility = 17
+java {
+  sourceCompatibility = 17
+  targetCompatibility = 17
+}
 
 group='com.jokerconf'
-archivesBaseName = 'tdd-profiler'
 version='1.0-SNAPSHOT'
 
 defaultTasks 'test', 'jar'
@@ -21,13 +22,28 @@ repositories {
 
 dependencies {
   implementation 'org.javassist:javassist:3.30.2-GA'
-  testImplementation 'junit:junit:4.13.2'
   testImplementation 'org.mockito:mockito-core:5.21.0'
   testImplementation 'com.codeborne:selenide:7.14.0'
+  testImplementation "org.assertj:assertj-core:3.27.7"
+
+  testImplementation platform("org.junit:junit-bom:6.0.2")
+  testImplementation "org.junit.jupiter:junit-jupiter"
+  testImplementation "org.junit.platform:junit-platform-engine"
+  testImplementation "org.junit.platform:junit-platform-launcher"
 }
 
 test {
-  include 'com/jokerconf/**/*'
+  include 'profiler/**/*'
+}
+
+tasks.withType(Test).configureEach { testTask ->
+  useJUnitPlatform()
+  jvmArgs("--add-opens", "java.base/java.lang=ALL-UNNAMED")
+  testTask.systemProperties['file.encoding'] = 'UTF-8'
+  testTask.systemProperties['user.country'] = 'TR'
+  testTask.systemProperties['user.language'] = 'tr'
+  testTask.testLogging { exceptionFormat = 'full' }
+  testTask.outputs.upToDateWhen { false }
 }
 
 jar {

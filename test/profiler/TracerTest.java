@@ -1,21 +1,21 @@
 package profiler;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TracerTest {
-  @Before
+  @BeforeEach
   public void setUp() {
     Tracer.instance = new Tracer();
   }
 
   @Test
   public void initialStatistics() {
-    assertEquals(0, Tracer.instance.getStatistics().getResult().length());
+    assertThat(Tracer.instance.getStatistics().getResult()).hasSize(0);
   }
 
   @Test
@@ -23,7 +23,7 @@ public class TracerTest {
     Tracer.instance.enter();
     Tracer.instance.exit(null);
     
-    assertEquals(1, Tracer.instance.getStatistics().getExecutionTime().size());
+    assertThat(Tracer.instance.getStatistics().getExecutionTime()).hasSize(1);
   }
   
   @Test
@@ -33,7 +33,7 @@ public class TracerTest {
     Tracer.instance.exit(null);
 
     long time = Tracer.instance.getStatistics().getExecutionTime().get(0);
-    assertTrue(time + "ms", time >= 5);
+    assertThat(time).isGreaterThanOrEqualTo(5);
   }
 
   @Test
@@ -47,8 +47,8 @@ public class TracerTest {
     Tracer.instance.exit("do");
 
     List<Long> time = Tracer.instance.getStatistics().getExecutionTime();
-    assertEquals(2, time.size());
-    assertTrue(time + "ms", time.get(0) >= 5);
-    assertTrue(time + "ms", time.get(1) >= 6);
+    assertThat(time).hasSize(2);
+    assertThat(time.get(0)).isGreaterThanOrEqualTo(5);
+    assertThat(time.get(1)).isGreaterThanOrEqualTo(6);
   }
 }

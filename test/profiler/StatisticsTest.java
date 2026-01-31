@@ -1,8 +1,9 @@
 package profiler;
 
-import org.junit.Test;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class StatisticsTest {
   @Test
@@ -10,7 +11,9 @@ public class StatisticsTest {
     Statistics statistics = new Statistics();
     statistics.add("com.jokerconf.A.do1", 100L);
     statistics.add("com.jokerconf.B.do2", 200L);
-    assertEquals("com.jokerconf.A.do1 100 ms\n" +
-        "com.jokerconf.B.do2 200 ms", statistics.getResult());
+    assertThat(statistics.getResult()).isEqualToIgnoringNewLines(
+        "com.jokerconf.A.do1 100 ms\r\n\n" +
+            "com.jokerconf.B.do2 200 ms"
+    );
   }
 }
