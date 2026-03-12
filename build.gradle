@@ -23,7 +23,7 @@ repositories {
 dependencies {
   implementation 'org.javassist:javassist:3.30.2-GA'
   testImplementation 'org.mockito:mockito-core:5.22.0'
-  testImplementation 'com.codeborne:selenide:7.14.0'
+  testImplementation 'com.codeborne:selenide:7.15.0'
   testImplementation "org.assertj:assertj-core:3.27.7"
 
   testImplementation platform("org.junit:junit-bom:6.0.3")
