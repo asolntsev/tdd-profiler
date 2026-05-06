@@ -20,10 +20,9 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+    - uses: gradle/actions/setup-gradle@v6
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@v3
-      with:
-        arguments: build
+      run: ./gradlew build
 
   auto-merge-dependabot:
     name: 🤖 Auto merge dependabot PR
@@ -36,7 +35,7 @@ jobs:
       contents: write
     steps:
       - name: 🤖 Merge PR from dependabot
-        uses: fastify/github-action-merge-dependabot@v3.12.0
+        uses: fastify/github-action-merge-dependabot@v3
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           target: minor
