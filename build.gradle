@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'org.javassist:javassist:3.31.0-GA'
+  implementation 'org.javassist:javassist:3.32.0-GA'
   testImplementation 'org.mockito:mockito-core:5.23.0'
   testImplementation 'com.codeborne:selenide:7.16.2'
   testImplementation "org.assertj:assertj-core:3.27.7"
